@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2016-08-11T02:33:54.545Z</updated>
+  <updated>2016-08-10T09:17:32.111Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yoursite.com/2016/08/11/hello-world/"/>
     <id>http://yoursite.com/2016/08/11/hello-world/</id>
     <published>2016-08-11T02:33:54.540Z</published>
-    <updated>2016-08-11T02:33:54.545Z</updated>
+    <updated>2016-08-10T09:17:32.111Z</updated>
     
     <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
 <h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
@@ -36,6 +36,175 @@
     <summary type="html">
     
       &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>angularjs-自定义搜索选择框</title>
+    <link href="http://yoursite.com/2016/08/10/angularjs-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%90%9C%E7%B4%A2%E9%80%89%E6%8B%A9%E6%A1%86/"/>
+    <id>http://yoursite.com/2016/08/10/angularjs-自定义搜索选择框/</id>
+    <published>2016-08-10T09:55:39.000Z</published>
+    <updated>2016-08-10T10:18:03.033Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="angularjs的自定义搜索框简述"><a href="#angularjs的自定义搜索框简述" class="headerlink" title="angularjs的自定义搜索框简述"></a>angularjs的自定义搜索框简述</h1><ul>
+<li>有的时候下拉选项特别多，而用户在对要下拉的内容有模糊印象时利用下拉搜索框能大大提高选择的效率<h1 id="自定义选择框的实现原理"><a href="#自定义选择框的实现原理" class="headerlink" title="自定义选择框的实现原理"></a>自定义选择框的实现原理</h1></li>
+<li>定义一个文本框做输入，定义一个下拉选选作为选择使用</li>
+<li>根据文本框的输入内容对下拉选的内容做检索，把符合检索的列出来供用户选择</li>
+<li>把用户选择的内容显示在文本框中<h1 id="自定义选择框的实现代码"><a href="#自定义选择框的实现代码" class="headerlink" title="自定义选择框的实现代码"></a>自定义选择框的实现代码</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div></pre></td><td class="code"><pre><div class="line">&lt;!DOCTYPE html&gt;</div><div class="line">&lt;html&gt;</div><div class="line">&lt;head lang=&quot;zh_CN&quot;&gt;</div><div class="line">&lt;meta charset=&quot;utf-8&quot;&gt;</div><div class="line">   &lt;script src=&quot;http://apps.bdimg.com/libs/angular.js/1.4.6/angular.min.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;</div><div class="line">   &lt;link href=&quot;http://libs.baidu.com/bootstrap/3.0.3/css/bootstrap.min.css&quot; rel=&quot;stylesheet&quot;&gt;</div><div class="line">   &lt;script src=&quot;http://libs.baidu.com/jquery/2.0.0/jquery.min.js&quot;&gt;&lt;/script&gt;</div><div class="line">   &lt;script src=&quot;http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.min.js&quot;&gt;&lt;/script&gt;</div><div class="line">&lt;/head&gt;</div><div class="line">&lt;body &gt;</div><div class="line">&lt;div ng-app=&quot;myApp&quot; ng-controller=&quot;myCtrl&quot;&gt;</div><div class="line">	&lt;input type = &apos;test&apos; ng-change=&quot;changeKeyValue(searchField)&quot; ng-model=&quot;searchField&quot; style = &apos;display:block;width:200px&apos; ng-click = &apos;hidden=!hidden&apos; value=&quot;&#123;&#123;searchField&#125;&#125;&quot;/&gt;&lt;/input&gt;</div><div class="line">	&lt;div  ng-hide=&quot;hidden&quot;&gt;</div><div class="line">		&lt;select style = &apos;width:200px&apos; ng-change=&quot;change(x)&quot; ng-model=&quot;x&quot; multiple&gt;</div><div class="line">			&lt;option ng-repeat=&quot;data in datas&quot; &gt;&#123;&#123;data&#125;&#125;&lt;/option&gt;</div><div class="line">		&lt;/select&gt;</div><div class="line">	&lt;/div&gt;</div><div class="line">&lt;/div&gt;</div><div class="line"></div><div class="line">&lt;script&gt;</div><div class="line">var app = angular.module(&apos;myApp&apos;, []);</div><div class="line">app.controller(&apos;myCtrl&apos;, function($scope) &#123;</div><div class="line">	$scope.datas = [&quot;key4&quot;,&quot;xyz&quot;,&quot;key3&quot;,&quot;xxxx&quot;,&quot;key2&quot;,&quot;value2&quot;,&quot;key1&quot;,&quot;value1&quot;]; //下拉框选项</div><div class="line">	$scope.tempdatas = $scope.datas; //下拉框选项副本</div><div class="line">	$scope.hidden=true;//选择框是否隐藏</div><div class="line">	$scope.searchField=&apos;&apos;;//文本框数据</div><div class="line">	//将下拉选的数据值赋值给文本框</div><div class="line">	$scope.change=function(x)&#123;</div><div class="line">		$scope.searchField=x;</div><div class="line">		$scope.hidden=true;</div><div class="line">	&#125;</div><div class="line">	//获取的数据值与下拉选逐个比较，如果包含则放在临时变量副本，并用临时变量副本替换下拉选原先的数值，如果数据为空或找不到，就用初始下拉选项副本替换</div><div class="line">	$scope.changeKeyValue=function(v)&#123;</div><div class="line">		</div><div class="line">		var newDate=[];  //临时下拉选副本</div><div class="line">		//如果包含就添加</div><div class="line">		angular.forEach($scope.datas ,function(data,index,array)&#123;</div><div class="line">			if(data.indexOf(v)&gt;=0)&#123;</div><div class="line">				newDate.unshift(data);</div><div class="line">			&#125;</div><div class="line">		&#125;);</div><div class="line">		//用下拉选副本替换原来的数据</div><div class="line">		$scope.datas=newDate;</div><div class="line">		//下拉选展示</div><div class="line">		$scope.hidden=false;</div><div class="line">		//如果不包含或者输入的是空字符串则用初始变量副本做替换</div><div class="line">		if($scope.datas.length==0 || &apos;&apos;==v)&#123;</div><div class="line">			$scope.datas=$scope.tempdatas;</div><div class="line">		&#125;</div><div class="line">		console.log($scope.datas);</div><div class="line">	&#125;</div><div class="line">&#125;);</div><div class="line"></div><div class="line">&lt;/script&gt;</div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><a href="http://blog.csdn.net/qzshiyongjie123/article/details/52162217" target="_blank" rel="external">请参考我在csdn上的博客</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;angularjs的自定义搜索框简述&quot;&gt;&lt;a href=&quot;#angularjs的自定义搜索框简述&quot; class=&quot;headerlink&quot; title=&quot;angularjs的自定义搜索框简述&quot;&gt;&lt;/a&gt;angularjs的自定义搜索框简述&lt;/h1&gt;&lt;ul&gt;
+&lt;li&gt;
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>markdown学习.md</title>
+    <link href="http://yoursite.com/2016/08/10/markdown%E5%AD%A6%E4%B9%A0-md/"/>
+    <id>http://yoursite.com/2016/08/10/markdown学习-md/</id>
+    <published>2016-08-10T09:38:37.000Z</published>
+    <updated>2016-08-10T09:52:05.440Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="欢迎使用Markdown编辑器写博客"><a href="#欢迎使用Markdown编辑器写博客" class="headerlink" title="欢迎使用Markdown编辑器写博客"></a>欢迎使用Markdown编辑器写博客</h1><p>本Markdown编辑器使用<a href="https://github.com/benweet/stackedit" target="_blank" rel="external">StackEdit</a>修改而来，用它写博客，将会带来全新的体验哦：</p>
+<ul>
+<li><strong>Markdown和扩展Markdown简洁的语法</strong></li>
+<li><strong>代码块高亮</strong></li>
+<li><strong>图片链接和图片上传</strong></li>
+<li><strong><em>LaTex</em>数学公式</strong></li>
+<li><strong>UML序列图和流程图</strong></li>
+<li><strong>离线写博客</strong></li>
+<li><strong>导入导出Markdown文件</strong></li>
+<li><strong>丰富的快捷键</strong></li>
+</ul>
+<hr>
+<h2 id="快捷键"><a href="#快捷键" class="headerlink" title="快捷键"></a>快捷键</h2><ul>
+<li>加粗    <code>Ctrl + B</code> </li>
+<li>斜体    <code>Ctrl + I</code> </li>
+<li>引用    <code>Ctrl + Q</code></li>
+<li>插入链接    <code>Ctrl + L</code></li>
+<li>插入代码    <code>Ctrl + K</code></li>
+<li>插入图片    <code>Ctrl + G</code></li>
+<li>提升标题    <code>Ctrl + H</code></li>
+<li>有序列表    <code>Ctrl + O</code></li>
+<li>无序列表    <code>Ctrl + U</code></li>
+<li>横线    <code>Ctrl + R</code></li>
+<li>撤销    <code>Ctrl + Z</code></li>
+<li>重做    <code>Ctrl + Y</code></li>
+</ul>
+<h2 id="Markdown及扩展"><a href="#Markdown及扩展" class="headerlink" title="Markdown及扩展"></a>Markdown及扩展</h2><blockquote>
+<p>Markdown 是一种轻量级标记语言，它允许人们使用易读易写的纯文本格式编写文档，然后转换成格式丰富的HTML页面。    —— <a href="https://zh.wikipedia.org/wiki/Markdown" target="_blank"> [ 维基百科 ]</a></p>
+</blockquote>
+<p>使用简单的符号标识不同的标题，将某些文字标记为<strong>粗体</strong>或者<em>斜体</em>，创建一个<a href="http://www.csdn.net" target="_blank" rel="external">链接</a>等，详细语法参考帮助？。</p>
+<p>本编辑器支持 <strong>Markdown Extra</strong> , 　扩展了很多好用的功能。具体请参考<a href="https://github.com/jmcmanus/pagedown-extra" title="Pagedown Extra" target="_blank" rel="external">Github</a>.  </p>
+<h3 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h3><p><strong>Markdown　Extra</strong>　表格语法：</p>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>价格</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Computer</td>
+<td>$1600</td>
+</tr>
+<tr>
+<td>Phone</td>
+<td>$12</td>
+</tr>
+<tr>
+<td>Pipe</td>
+<td>$1</td>
+</tr>
+</tbody>
+</table>
+<p>可以使用冒号来定义对齐方式：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">项目</th>
+<th style="text-align:right">价格</th>
+<th style="text-align:center">数量</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Computer</td>
+<td style="text-align:right">1600 元</td>
+<td style="text-align:center">5</td>
+</tr>
+<tr>
+<td style="text-align:left">Phone</td>
+<td style="text-align:right">12 元</td>
+<td style="text-align:center">12</td>
+</tr>
+<tr>
+<td style="text-align:left">Pipe</td>
+<td style="text-align:right">1 元</td>
+<td style="text-align:center">234</td>
+</tr>
+</tbody>
+</table>
+<p>###定义列表</p>
+<p><strong>Markdown　Extra</strong>　定义列表语法：<br>项目１<br>项目２<br>:   定义 A<br>:   定义 B</p>
+<p>项目３<br>:   定义 C</p>
+<p>:   定义 D</p>
+<pre><code>&gt; 定义D内容
+</code></pre><h3 id="代码块"><a href="#代码块" class="headerlink" title="代码块"></a>代码块</h3><p>代码块语法遵循标准markdown代码，例如：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@requires_authorization</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">somefunc</span><span class="params">(param1=<span class="string">''</span>, param2=<span class="number">0</span>)</span>:</span></div><div class="line">    <span class="string">'''A docstring'''</span></div><div class="line">    <span class="keyword">if</span> param1 &gt; param2: <span class="comment"># interesting</span></div><div class="line">        <span class="keyword">print</span> <span class="string">'Greater'</span></div><div class="line">    <span class="keyword">return</span> (param2 - param1 + <span class="number">1</span>) <span class="keyword">or</span> <span class="keyword">None</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">SomeClass</span>:</span></div><div class="line">    <span class="keyword">pass</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>message = <span class="string">'''interpreter</span></div><div class="line"><span class="meta">... </span>prompt'''</div></pre></td></tr></table></figure></p>
+<p>###脚注<br>生成一个脚注[^footnote].<br>  [^footnote]: 这里是 <strong>脚注</strong> 的 <em>内容</em>.</p>
+<h3 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h3><p>用 <code>[TOC]</code>来生成目录：</p>
+<p>[TOC]</p>
+<h3 id="数学公式"><a href="#数学公式" class="headerlink" title="数学公式"></a>数学公式</h3><p>使用MathJax渲染<em>LaTex</em> 数学公式，详见<a href="http://math.stackexchange.com/" target="_blank" rel="external">math.stackexchange.com</a>.</p>
+<ul>
+<li>行内公式，数学公式为：$\Gamma(n) = (n-1)!\quad\forall n\in\mathbb N$。</li>
+<li>块级公式：</li>
+</ul>
+<p>$$    x = \dfrac{-b \pm \sqrt{b^2 - 4ac}}{2a} $$</p>
+<p>更多LaTex语法请参考 <a href="http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference" target="_blank" rel="external">这儿</a>.</p>
+<h3 id="UML-图"><a href="#UML-图" class="headerlink" title="UML 图:"></a>UML 图:</h3><p>可以渲染序列图：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">张三-&gt;李四: 嘿，小四儿, 写博客了没?</div><div class="line">Note right of 李四: 李四愣了一下，说：</div><div class="line">李四--&gt;张三: 忙得吐血，哪有时间写。</div></pre></td></tr></table></figure>
+<p>或者流程图：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">st=&gt;start: 开始</div><div class="line">e=&gt;end: 结束</div><div class="line">op=&gt;operation: 我的操作</div><div class="line">cond=&gt;condition: 确认？</div><div class="line"></div><div class="line">st-&gt;op-&gt;cond</div><div class="line">cond(yes)-&gt;e</div><div class="line">cond(no)-&gt;op</div></pre></td></tr></table></figure>
+<ul>
+<li>关于 <strong>序列图</strong> 语法，参考 <a href="http://bramp.github.io/js-sequence-diagrams/" target="_blank" rel="external">这儿</a>,</li>
+<li>关于 <strong>流程图</strong> 语法，参考 <a href="http://adrai.github.io/flowchart.js/" target="_blank" rel="external">这儿</a>.</li>
+</ul>
+<h2 id="离线写博客"><a href="#离线写博客" class="headerlink" title="离线写博客"></a>离线写博客</h2><p>即使用户在没有网络的情况下，也可以通过本编辑器离线写博客（直接在曾经使用过的浏览器中输入<a href="http://write.blog.csdn.net/mdeditor" target="_blank" rel="external">write.blog.csdn.net/mdeditor</a>即可。<strong>Markdown编辑器</strong>使用浏览器离线存储将内容保存在本地。</p>
+<p>用户写博客的过程中，内容实时保存在浏览器缓存中，在用户关闭浏览器或者其它异常情况下，内容不会丢失。用户再次打开浏览器时，会显示上次用户正在编辑的没有发表的内容。</p>
+<p>博客发表后，本地缓存将被删除。　</p>
+<p>用户可以选择 <i class="icon-disk"></i> 把正在写的博客保存到服务器草稿箱，即使换浏览器或者清除缓存，内容也不会丢失。</p>
+<blockquote>
+<p><strong>注意：</strong>虽然浏览器存储大部分时候都比较可靠，但为了您的数据安全，在联网后，<strong>请务必及时发表或者保存到服务器草稿箱</strong>。</p>
+</blockquote>
+<p>##浏览器兼容</p>
+<ol>
+<li>目前，本编辑器对Chrome浏览器支持最为完整。建议大家使用较新版本的Chrome。</li>
+<li>IE９以下不支持</li>
+<li>IE９，１０，１１存在以下问题<ol>
+<li>不支持离线功能</li>
+<li>IE9不支持文件导入导出</li>
+<li>IE10不支持拖拽文件导入</li>
+</ol>
+</li>
+</ol>
+<hr>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;欢迎使用Markdown编辑器写博客&quot;&gt;&lt;a href=&quot;#欢迎使用Markdown编辑器写博客&quot; class=&quot;headerlink&quot; title=&quot;欢迎使用Markdown编辑器写博客&quot;&gt;&lt;/a&gt;欢迎使用Markdown编辑器写博客&lt;/h1&gt;&lt;p&gt;本Markd
     
     </summary>
     
