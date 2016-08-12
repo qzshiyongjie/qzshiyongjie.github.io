@@ -2,23 +2,30 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://yoursite.com/reading/index.html</loc>
-    
-    <lastmod>2016-08-12T02:21:31.225Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://yoursite.com/about/index.html</loc>
     
-    <lastmod>2016-08-12T02:21:31.224Z</lastmod>
+    <lastmod>2016-08-12T03:09:38.968Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://yoursite.com/2016/08/10/angularjs-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%90%9C%E7%B4%A2%E9%80%89%E6%8B%A9%E6%A1%86/</loc>
     
-    <lastmod>2016-08-10T10:18:03.033Z</lastmod>
+    <lastmod>2016-08-12T03:07:04.177Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/category/angularjs-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%90%9C%E7%B4%A2%E9%80%89%E6%8B%A9%E6%A1%86.html</loc>
+    
+    <lastmod>2016-08-12T03:07:04.177Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/reading/index.html</loc>
+    
+    <lastmod>2016-08-12T02:21:31.225Z</lastmod>
     
   </url>
   

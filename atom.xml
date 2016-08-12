@@ -47,7 +47,7 @@
     <link href="http://yoursite.com/2016/08/10/angularjs-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%90%9C%E7%B4%A2%E9%80%89%E6%8B%A9%E6%A1%86/"/>
     <id>http://yoursite.com/2016/08/10/angularjs-自定义搜索选择框/</id>
     <published>2016-08-10T09:55:39.000Z</published>
-    <updated>2016-08-10T10:18:03.033Z</updated>
+    <updated>2016-08-12T03:07:04.177Z</updated>
     
     <content type="html"><![CDATA[<h1 id="angularjs的自定义搜索框简述"><a href="#angularjs的自定义搜索框简述" class="headerlink" title="angularjs的自定义搜索框简述"></a>angularjs的自定义搜索框简述</h1><ul>
 <li>有的时候下拉选项特别多，而用户在对要下拉的内容有模糊印象时利用下拉搜索框能大大提高选择的效率<h1 id="自定义选择框的实现原理"><a href="#自定义选择框的实现原理" class="headerlink" title="自定义选择框的实现原理"></a>自定义选择框的实现原理</h1></li>
@@ -66,6 +66,8 @@
     
     </summary>
     
+    
+      <category term="angularjs" scheme="http://yoursite.com/tags/angularjs/"/>
     
   </entry>
   
