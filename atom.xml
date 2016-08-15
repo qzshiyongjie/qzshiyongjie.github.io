@@ -1,19 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>小时的博客</title>
-  <subtitle>技术宅 游戏渣</subtitle>
+  <title>Hexo</title>
+  
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2016-08-10T09:17:32.111Z</updated>
+  <updated>2016-08-15T03:12:56.262Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
-    <name>qzshiyongjie@sina.com</name>
+    <name>John Doe</name>
     
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>理财师app</title>
+    <link href="http://yoursite.com/2016/08/12/%E5%87%BA%E5%80%9F%E4%BA%BAapp/"/>
+    <id>http://yoursite.com/2016/08/12/出借人app/</id>
+    <published>2016-08-12T09:55:39.000Z</published>
+    <updated>2016-08-15T03:12:56.262Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="产品首页"><a href="#产品首页" class="headerlink" title="产品首页"></a>产品首页</h1><h2 id="url"><a href="#url" class="headerlink" title="url"></a>url</h2><p> <a href="http://10.100.140.22:8088/itoumi/mobile/app/store/recommendStoreList.json" target="_blank" rel="external">http://10.100.140.22:8088/itoumi/mobile/app/store/recommendStoreList.json</a></p>
+<h2 id="wike"><a href="#wike" class="headerlink" title="wike"></a>wike</h2><p> <a href="http://wiki.caiwu.corp/pages/viewpage.action?pageId=9700327" target="_blank" rel="external">http://wiki.caiwu.corp/pages/viewpage.action?pageId=9700327</a></p>
+<h2 id="java文件"><a href="#java文件" class="headerlink" title="java文件"></a>java文件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">/itmweb_20160614_cashProduct_v2/src/main/java/cn/creditease/xinghuo/controller/app/xinghuo/store/StoreController.java</div><div class="line">public ResponseResData&lt;RecStoreListResData&gt; recommendStoreList( HttpServletRequest req ) throws Exception</div></pre></td></tr></table></figure>
+<hr>
+<h1 id="类固定收益-列表页"><a href="#类固定收益-列表页" class="headerlink" title="类固定收益-列表页"></a>类固定收益-列表页</h1><p>参考出借人类固定收益</p>
+<h2 id="url-1"><a href="#url-1" class="headerlink" title="url"></a>url</h2><p> /mobile/app/store/defaultRecProList.json</p>
+<h2 id="wiki"><a href="#wiki" class="headerlink" title="wiki"></a>wiki</h2><p> 还没写</p>
+<h2 id="java-文件"><a href="#java-文件" class="headerlink" title="java 文件"></a>java 文件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">/itmweb_20160614_cashProduct_v2/src/main/java/cn/creditease/xinghuo/controller/app/xinghuo/store/StoreController.java</div><div class="line">@RequestMapping( &quot;/defaultRecProList.json&quot; )</div><div class="line">@ResponseBody</div><div class="line">public ResponseResData&lt;StoreProListResData&gt; defaultRecProList( HttpServletRequest req ) throws Exception</div></pre></td></tr></table></figure>
+<h2 id="备注"><a href="#备注" class="headerlink" title="备注"></a>备注</h2><h2 id="类固定收益产品包括：零投宝（可变现-amp-不可变现）、月盈宝、定期宝"><a href="#类固定收益产品包括：零投宝（可变现-amp-不可变现）、月盈宝、定期宝" class="headerlink" title="类固定收益产品包括：零投宝（可变现&amp;不可变现）、月盈宝、定期宝"></a>类固定收益产品包括：零投宝（可变现&amp;不可变现）、月盈宝、定期宝</h2>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;产品首页&quot;&gt;&lt;a href=&quot;#产品首页&quot; class=&quot;headerlink&quot; title=&quot;产品首页&quot;&gt;&lt;/a&gt;产品首页&lt;/h1&gt;&lt;h2 id=&quot;url&quot;&gt;&lt;a href=&quot;#url&quot; class=&quot;headerlink&quot; title=&quot;url&quot;&gt;&lt;/a&gt;ur
+    
+    </summary>
+    
+    
+      <category term="学习笔记" scheme="http://yoursite.com/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
   
   <entry>
     <title>Hello World</title>
