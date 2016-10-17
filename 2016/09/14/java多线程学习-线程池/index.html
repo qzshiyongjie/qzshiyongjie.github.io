@@ -7,13 +7,18 @@
 
     
 
-    <title>归档 | </title>
+    <title>java多线程-线程池 | </title>
     <meta name="author" content="John Doe">
+    
+    <meta name="description" content="任务与执行策略之间的隐形耦合Executor框架为置顶和修改执行策略听歌了很大的灵活性，但并非所有的任务都能适合所有的执行策略
+
+依赖性任务如果提交给线程池的任务需要以来其他的任务，那么就隐含地给执行策略带来了约束，此时需要维持执行策略以免产生跳跃性的问题
+使用线程封闭机制的任务任务要求其执行所在的">
     
     
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-    
+    <meta property="og:title" content="java多线程-线程池"/>
     <meta property="og:site_name" content="Hexo"/>
 
     
@@ -191,82 +196,68 @@
 
     <main>
         <div class="container main-container">
-    
-
-<nav class="page-nav hide-on-small-only">
+    <nav class="page-nav hide-on-small-only">
     <div class="nav-wrapper indigo">
-        <span class="breadcrumb">当前位置（归档）</span>
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+
         
 
         
     </div>
 </nav>
 
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>java多线程-线程池</h1>
+    
 
 
-    <ul class="collapsible mt-0" data-collapsible="accordion">
+            </div>
+            <time class="pink-link-context" datetime="2016-09-14T02:49:39.000Z"><a href="/2016/09/14/java多线程学习-线程池/">2016-09-14</a></time>
+
+            
+    <div class="tags-row">
         
+            <a href="/tags/java多线程/" class="chip pink lighten-1">java多线程</a>
         
-            <li>
-                <div class="collapsible-header active">
-                    <i class="fa fa-archive"></i>2016
-                </div>
-                <div class="collapsible-body">
-                    <div class="collection">
-                        
-                            <a href="/2016/10/14/单点登入认证客户端详解/" class="collection-item grey-text text-darken-1">
-                                <time datetime="2016-10-14T02:40:39.000Z">2016-10-14</time>
-                                <span>&nbsp;&nbsp;&nbsp;</span>
-                                sso单点登入认证
-                            </a>
-                        
-                            <a href="/2016/09/14/java多线程学习-线程池/" class="collection-item grey-text text-darken-1">
-                                <time datetime="2016-09-14T02:49:39.000Z">2016-09-14</time>
-                                <span>&nbsp;&nbsp;&nbsp;</span>
-                                java多线程-线程池
-                            </a>
-                        
-                            <a href="/2016/09/06/java多线程学习-对象的共享/" class="collection-item grey-text text-darken-1">
-                                <time datetime="2016-09-06T02:49:39.000Z">2016-09-06</time>
-                                <span>&nbsp;&nbsp;&nbsp;</span>
-                                java多线程-对象的共享
-                            </a>
-                        
-                            <a href="/2016/09/06/java多线程学习/" class="collection-item grey-text text-darken-1">
-                                <time datetime="2016-09-06T02:49:39.000Z">2016-09-06</time>
-                                <span>&nbsp;&nbsp;&nbsp;</span>
-                                java多线程-线程安全性
-                            </a>
-                        
-                            <a href="/2016/08/31/idea常用快捷键/" class="collection-item grey-text text-darken-1">
-                                <time datetime="2016-08-31T05:55:39.000Z">2016-08-31</time>
-                                <span>&nbsp;&nbsp;&nbsp;</span>
-                                idea 快捷键
-                            </a>
-                        
-                            <a href="/2016/08/23/git使用教程/" class="collection-item grey-text text-darken-1">
-                                <time datetime="2016-08-23T09:55:39.000Z">2016-08-23</time>
-                                <span>&nbsp;&nbsp;&nbsp;</span>
-                                git使用教程
-                            </a>
-                        
-                            <a href="/2016/08/11/hello-world/" class="collection-item grey-text text-darken-1">
-                                <time datetime="2016-08-11T02:33:54.540Z">2016-08-11</time>
-                                <span>&nbsp;&nbsp;&nbsp;</span>
-                                Hello World
-                            </a>
-                        
-                            <a href="/2016/08/10/angularjs-自定义搜索选择框/" class="collection-item grey-text text-darken-1">
-                                <time datetime="2016-08-10T09:55:39.000Z">2016-08-10</time>
-                                <span>&nbsp;&nbsp;&nbsp;</span>
-                                angularjs-自定义搜索选择框
-                            </a>
-                        
-                    </div>
-                </div>
-            </li>
-        
-    </ul>
+    </div>
+
+
+            <div class="toc pink-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-1"><a class="section table-of-contents-link" href="#任务与执行策略之间的隐形耦合"><span class="section table-of-contents-text">任务与执行策略之间的隐形耦合</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#线程饥饿死锁"><span class="section table-of-contents-text">线程饥饿死锁</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#执行时间较长的任务"><span class="section table-of-contents-text">执行时间较长的任务</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#设置线程池的大小"><span class="section table-of-contents-text">设置线程池的大小</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-1"><a class="section table-of-contents-link" href="#配置ThreadPoolExecutor"><span class="section table-of-contents-text">配置ThreadPoolExecutor</span></a></li></ol>
+</div>
+
+
+            <div class="entry pink-link-context">
+                <h1 id="任务与执行策略之间的隐形耦合"><a href="#任务与执行策略之间的隐形耦合" class="headerlink" title="任务与执行策略之间的隐形耦合"></a>任务与执行策略之间的隐形耦合</h1><p>Executor框架为置顶和修改执行策略听歌了很大的灵活性，但并非所有的任务都能适合所有的执行策略</p>
+<ul>
+<li>依赖性任务<br>如果提交给线程池的任务需要以来其他的任务，那么就隐含地给执行策略带来了约束，此时需要维持执行策略以免产生跳跃性的问题</li>
+<li>使用线程封闭机制的任务<br>任务要求其执行所在的Exeutor是单线程的。</li>
+<li>对响应时间敏感的任务</li>
+<li>使用ThreadLocal任务<br>只有当线程本地值的生命受限于任务色声明周期时，在线程池中使用ThreadLocal才有意义，而在线程池的线程中不应该使用ThradLocal在任务之间传递值。</li>
+</ul>
+<h2 id="线程饥饿死锁"><a href="#线程饥饿死锁" class="headerlink" title="线程饥饿死锁"></a>线程饥饿死锁</h2><p>在线程池中，如果任务依赖于其他任务，则可能产生死锁</p>
+<h2 id="执行时间较长的任务"><a href="#执行时间较长的任务" class="headerlink" title="执行时间较长的任务"></a>执行时间较长的任务</h2><h2 id="设置线程池的大小"><a href="#设置线程池的大小" class="headerlink" title="设置线程池的大小"></a>设置线程池的大小</h2><p>计算密集型线程 = cpu数量+1<br>I/O 密集型线程数更大些</p>
+<h1 id="配置ThreadPoolExecutor"><a href="#配置ThreadPoolExecutor" class="headerlink" title="配置ThreadPoolExecutor"></a>配置ThreadPoolExecutor</h1><p>一个 ExecutorService，它使用可能的几个池线程之一执行每个提交的任务，通常使用 Executors 工厂方法配置。 </p>
+<p>线程池可以解决两个不同问题：由于减少了每个任务调用的开销，它们通常可以在执行大量异步任务时提供增强的性能，并且还可以提供绑定和管理资源（包括执行任务集时使用的线程）的方法。每个 ThreadPoolExecutor 还维护着一些基本的统计数据，如完成的任务数。 </p>
+<p>为了便于跨大量上下文使用，此类提供了很多可调整的参数和扩展钩子 (hook)。但是，强烈建议程序员使用较为方便的 Executors 工厂方法 Executors.newCachedThreadPool()（无界线程池，可以进行自动线程回收）、Executors.newFixedThreadPool(int)（固定大小线程池）和 Executors.newSingleThreadExecutor()（单个后台线程），它们均为大多数使用场景预定义了设置。否则，在手动配置和调整此类时，使用以下指导： </p>
+
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
 
 
 </div>

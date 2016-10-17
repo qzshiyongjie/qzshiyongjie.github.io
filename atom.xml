@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2016-08-23T10:28:09.319Z</updated>
+  <updated>2016-10-17T06:10:51.100Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -16,11 +16,211 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>sso单点登入认证</title>
+    <link href="http://yoursite.com/2016/10/14/%E5%8D%95%E7%82%B9%E7%99%BB%E5%85%A5%E8%AE%A4%E8%AF%81%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AF%A6%E8%A7%A3/"/>
+    <id>http://yoursite.com/2016/10/14/单点登入认证客户端详解/</id>
+    <published>2016-10-14T02:40:39.000Z</published>
+    <updated>2016-10-17T06:10:51.100Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="登入认证"><a href="#登入认证" class="headerlink" title="登入认证"></a>登入认证</h1><h2 id="step1-用户登入主页面"><a href="#step1-用户登入主页面" class="headerlink" title="step1 用户登入主页面"></a>step1 用户登入主页面</h2><h3 id="url-index"><a href="#url-index" class="headerlink" title="url:/index"></a>url:/index</h3><h3 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h3><p>获取SSoToken,并判断SSOToken是否存在，存在的话说明登入成功，不存在,<a href="#jump0">重定向到sso服务器的登入界面</a></p>
+<ol>
+<li><p>获取名次为uid的cookie，如果没有说明没有登入，重定向到sso服务器的登入界面</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Cookie uid = CookieHelper.findCookieByName(request, &quot;uid&quot;);</div></pre></td></tr></table></figure>
+</li>
+<li><p>对uid的数据进行解密，解密方式为aes,密钥为配置在sso.secretkey的数据,可参考下边<a href="#jump1">解密方式</a>.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">比如数据：8biJRdjIa2RJlXWd6OAXcIuath0fRxLQnMJHJuBfHUiAGsRFn1Gg4hma6Q2edeg4VRp9UleK9XCFeLuz2oI3dopV5NINzunvirYqB_iRjfGCIp1ONhsUMbXvWsMRvUe-ZFAtaUO1W4xjplKrsbyb2RWjxgd_QpjwyCL3Xc6BtqHGahmDjeymOMptyu5quFVRen2c9RKxQC9kFEMSjcbeYrkjLuisI_YO3USuQITLC-L2FcpjPhYoesQ2H2o1TpLXzQSG6segrw5HI75GqbWs0BMm5SVjVAAqogn0uPv7st8Ei_LYYOPiJ5vrJGScZnjmWOTXA1crS4KmT8J8UdpgA5MOPZKNchlrRwTxgXW7C3wRZpEeALsjlpNIPaHXyMM7lebMQOAC9X7Zg-zSRtt3_vCGjJdJH5X6Wilgbhs7xtda9WxZXJ76NVFXUsw91D1e3A-isqVYbeFJj7k_scT0RACdbDyqjKYrFbbUJBFzfc5HmeHqG9efyaia0-Ev6y4DIUxs3u7PoltaFT_dCsXwuw..</div><div class="line">解密完成以后的数据为：xinghuosso_yongjieshi1@creditease.cn</div><div class="line">&#123;&quot;app&quot;:&quot;sso_yangkai&quot;,&quot;flag&quot;:0,&quot;time&quot;:1476427005216,&quot;uid&quot;:&quot;xinghuosso_yongjieshi1@creditease.cn&quot;,&quot;userinfo&quot;:&#123;&quot;dn&quot;:&quot;CN=时永杰,OU=技术研发团队,OU=星火金服团队,OU=支付结算中心,OU=财务部与结算中心,OU=宜信,OU=HABROOT,DC=creditease,DC=corp&quot;,&quot;employeeID&quot;:&quot;201606280068&quot;,&quot;realname&quot;:&quot;时永杰&quot;,&quot;username&quot;:&quot;yongjieshi1@creditease.cn&quot;&#125;&#125;#290197f3f040fa49f8cf43b4d0d6f681</div></pre></td></tr></table></figure>
+</li>
+<li><p>拿着uid字段中的数据xinghuosso_yongjieshi1@creditease 拼接成cacheKey ssoTokenKey_xinghuosso_yongjieshi1@creditease.cn</p>
+</li>
+<li>拿着cacheKey 去redis中取得SSOToken</li>
+<li>如果有数据，说明登入过，登入成功，返回到成功页面，如果没数据，说明用户已经退出登入，<a href="#jump0">重定向到sso服务器的登入界面</a></li>
+</ol>
+<p>总之，拿到cookid中的uid去sso服务器去判断是否存在</p>
+<h2 id="step2-sso服务器回调"><a href="#step2-sso服务器回调" class="headerlink" title="step2 sso服务器回调"></a>step2 sso服务器回调</h2><h3 id="url-proxylogin"><a href="#url-proxylogin" class="headerlink" title="url:/proxylogin"></a>url:/proxylogin</h3><h3 id="流程-1"><a href="#流程-1" class="headerlink" title="流程"></a>流程</h3><p>sso服务器如果登入成功，会向浏览器写入名次为pid的cookie，cookie的内容为SSOToken</p>
+<ol>
+<li>设置AuthToken的签名,加密方式为RSA，数据为 32位uuid-10.10.145.65，key为<a href="#jump3">sso.defined.private_key</a></li>
+<li><p>设置AuthToken的客户端相应信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">AuthToken=====&#123;&quot;app&quot;:&quot;sso_yangkai&quot;,&quot;flag&quot;:0,&quot;ip&quot;:&quot;10.10.145.65&quot;,&quot;sign&quot;:&quot;XnlfAcwWOSCH0PIRphO/tYBAesIUF4YTSeToRdwFvFLGJHoo6GPqiEXUGAJN41WwfWVirf+6IlpVElwGMg5LP3RH3Tjb+PCCBufuhaYbQvuPQz3wx6oBHrEQyJgjhqFPr5hxWEiZZKzK8g5ssB9T7rN+j8wbO03vPYbEi/XTBLk=&quot;,&quot;time&quot;:1476673154672,&quot;uuid&quot;:&quot;926def5800114e33b975d008176e6127&quot;&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>将AuthToken写到cookid，名称为pid，加密方式为AES,key为<a href="#jump3">sso.secretkey</a></p>
+</li>
+<li>对AuthToken进行加密，获取askData，加密方式为AES,key为<a href="#junmp3">sso.authcookie.secretkey</a></li>
+<li><p>将加密后的数据发送给浏览器。<a href="#jump2">浏览器通过ajax请求发送给sso服务器</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">sso服务器登入认证地址		 askurl========http://10.100.138.183:6060/sso/replylogin.html</div><div class="line">将AuthToken进行加密后的数据	 askData=======ijkkAC-Aguqp69yGdBYHW3Cn0rlVVbrUzo4yDBIailRhEC11a4hvlvpltEYnKa3UquDfOmSib-HL8ISWyU8tCPwGQc-6xOD-VswPHY7H4ig3oz0wOI5GPPmOQ7amKfSaZEexEOwDe_YJ0Btu3_uzk5Fl9jT0g19EmY7jXLrHxovEI0HbR4-RZH8WcVmCGc4COzyEAmDYL-IMlkUyhCDoo1Wymswg5pK3sTYnMgQbMzD8d04PCU4vQWEEKc2YlX37pWyqb9dVZ6BUsKr56GqnVfbyzB0MSojQEaY6dIw4rRcALNNyzwbD1_i7l5QcQFZYumxoNY1OgZMj6DblDwXzCabCSmfTQ_pveOQ-jS0C-X0UbbYbKZFv390NENw_6XmvVGBayCLelcFFsg_4EgZX2w.. </div><div class="line">验证成功后回调地址		 okurl========http://10.10.145.65:8090/oklogin.html</div><div class="line">请求超时地址			 timeouturl=========http://10.10.145.65:8090/timeout.html</div><div class="line">未登入请求地址			 nologinUrl=======http://10.100.138.183:6060/sso/login.html?ReturnURL=http://10.10.145.65:8090/proxylogin.html</div></pre></td></tr></table></figure>
+</li>
+<li><p>服务端会对askData进行解密并进行签名认证，如果认证成功，会把携带用户信息的AuthToken回写给okurl</p>
+</li>
+</ol>
+<h2 id="srep3-sso服务器成功回调"><a href="#srep3-sso服务器成功回调" class="headerlink" title="srep3 sso服务器成功回调"></a>srep3 sso服务器成功回调</h2><h3 id="url-oklogin"><a href="#url-oklogin" class="headerlink" title="url:/oklogin"></a>url:/oklogin</h3><h3 id="流程-2"><a href="#流程-2" class="headerlink" title="流程"></a>流程</h3><p>sso服务器此时已经把用户信息写到AuthToken，客户端要做的是对服务器回写的AuthToken进行解密并认证，拿到AuthToken数据并写到cookie</p>
+<ol>
+<li><p>获取replyTxt，这个数据是通过AES进行加密</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">replyTxt=======ijkkAC-Aguqp69yGdBYHWxlcVrStaG5iVaEv1UTKy6R3wLfnYFXRC2THOMN3vHe1ixs7-H9d9PztaXzsySnWysluv6i2GFGXYJ8h_05ru9wxSyrVzCK6kQFGRCCtP53SOVym0asCypU0DscsYk7Qes3GdU0UqDxpFwr35lHxyvB54c9rpAayzCsYPPQ0b-1mleLbFNwf06kJVv1bDTDek0r5pnqHN-vlV9YwLiptoxANoCB3_5tgEtRzuJPrtDcFDa0DjsegvkYnPO8JzkKl6KfTVUCQ5KEBYFPF-lnWvF4qQNuk5uycvi4ucTNwGRjs3JmfkDxvvKWMpboyZrdeELquPCvjljo4HTtIs8WJV18zG1zrzgTXywXy80Y8BkEVdLnaa9aQwbm5TctX3XYVkVkVw4dwluZE1PDned0mk3sJnblpk78wE-Cdp-UauMJ759qPZrjF8VAFXys3E3lgEPyRXWavs3hJ4V-NBD0bNCqsIwSXsWdP6mYbJra6jyqbnOyS5SEswPn4-nOl4oRJ5wzvgRnuAja-l23eVj5qHuqZ1Sq6egutio_EoDphI3maQVApau2xZbdQz94moekUTwb0HWDpZyYeU8CFsPXvF3NqlqUoIb-_QDL6w-BR8zMCEIuV9UpsAyNxe1chQ75ayxBrFBKN9i-BXgj7KT4bvqwfqvVDx8rPVy-WdYU_klab0H3qOnNh4lEcgk2HunY-Td6cNbebIBMeteBL4e5UhTeZlN79St7RiG6mH5BNLcTiejHl4EuJzdgUhpqQhSF_2QFXfPYUY4sAhpHEGRh_F1yoSQr3y9tljdWwSxPA_dLkjv4r1ERNriogBXqzBiieeHV91MMYtUinaDQYXIMN3Jj20LXE-8DuepErU27Sm2_BMvoiEZz7F4OYfECy9QS2pgLcf4q2yIOgEBeRWfMcVQ0cPJy-b9Jkm68xUroO4rjTePT5g4HrW8fctmybQm3D0NSQfYSb__ClpL54p-6hiYhOv5CGvqZ9QOjpuZNGuTbGtKzdHoGSRtJ5RFi3ZHmar-bypSoPdIWn7gJEYK-vVX4XcQzolqNSF1BH3zmnpH0gWke0EXh9gV1wcx4sKmiB9Z5gx-kh6PpxpaKFCiadr_V_ba5dhjjiI1C6cpgmYRHWo1zrc_aqZd1qSr5JEvWSR3oyj2V_z6OZhbO0bT4O6PfaEByO89c4WiiA3GI14tLy06rEOp79VtB7dL3YJ2aLEqT4cXGX1lB74NVHBxBmv8iYp5pgdnjCp71FfsG6NGuq80g9T5kWiNYqmg2zFYlnROLXHqOywkoIcsow1ksiXZeJqMS4X3s7OKFoXYyikYSXqq9Iao-aTkFbjIvP7Lnb0g..</div></pre></td></tr></table></figure>
+</li>
+<li><p>或取AuthToken1,这个AuthToken为第二步中客户端写入到cookie的AuthToken。对名称为pid的cookie进行解密，解密方式为AES，key为<a href="#jump3">sso.secretkey</a></p>
+</li>
+<li><p>对replyTxt进行解密，获取AuthToken2,这个AuthToken为服务器返回的antherTgoken,包含用户信息，解密的key为<a href="#jump3">sso.sso.authcookie.secretkey</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&#123;&quot;app&quot;:&quot;sso_yangkai&quot;,&quot;data&quot;:&quot;&#123;\&quot;app\&quot;:\&quot;sso\&quot;,\&quot;flag\&quot;:0,\&quot;ip\&quot;:\&quot;10.10.145.65\&quot;,\&quot;time\&quot;:1476668649636,\&quot;uid\&quot;:\&quot;xinghuosso_yongjieshi1@creditease.cn\&quot;,\&quot;userinfo\&quot;:&#123;\&quot;dn\&quot;:\&quot;CN=时永杰,OU=技术研发团队,OU=星火金服团队,OU=支付结算中心,OU=财务部与结算中心,OU=宜信,OU=HABROOT,DC=creditease,DC=corp\&quot;,\&quot;employeeID\&quot;:\&quot;201606280068\&quot;,\&quot;realname\&quot;:\&quot;时永杰\&quot;,\&quot;username\&quot;:\&quot;yongjieshi1@creditease.cn\&quot;&#125;&#125;&quot;,&quot;flag&quot;:0,&quot;ip&quot;:&quot;10.10.145.65&quot;,&quot;sign&quot;:&quot;S567I88pu7lIJPBx1Q8uvCmILKxEOyZ8zymbb1Kip/RPAQPoHDLogOe16Yg9N/94e3NNI/2aftjhu3ixaOlzW4r7K2U7WpsuNiOh6/lJAic+icXv5awtRshnpzqr1STCX67eLJL3RHZTjlmrFvF2PP9ma7Mhvn8TfMZzr6yDl6Y=&quot;,&quot;time&quot;:1476668649636,&quot;uid&quot;:&quot;xinghuosso_yongjieshi1@creditease.cn&quot;,&quot;userinfo&quot;:&#123;&quot;dn&quot;:&quot;CN=时永杰,OU=技术研发团队,OU=星火金服团队,OU=支付结算中心,OU=财务部与结算中心,OU=宜信,OU=HABROOT,DC=creditease,DC=corp&quot;,&quot;employeeID&quot;:&quot;201606280068&quot;,&quot;realname&quot;:&quot;时永杰&quot;,&quot;username&quot;:&quot;yongjieshi1@creditease.cn&quot;&#125;,&quot;uuid&quot;:&quot;f4d08b1b920c4db2b8620371e0ae4691&quot;&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>对AuthToken2中的签名进行认证,验签算法为RSA，key为<a href="#jump3">sso.defined.sso_public_key</a></p>
+</li>
+<li>如果验证通过,对AuthToken2进行AES加密，key为<a href="#jump3">sso.secretkey</a></li>
+<li>将加密后AuthToken2写入到cookie,名称为uid</li>
+</ol>
+<h1 id="退出认证"><a href="#退出认证" class="headerlink" title="退出认证"></a>退出认证</h1><h2 id="退出sso服务"><a href="#退出sso服务" class="headerlink" title="退出sso服务"></a>退出sso服务</h2><ol>
+<li>在浏览器点击链接 <a href="http://10.100.138.183:6060/sso/logout.html?logouturl=http://10.10.145.65:8090/index.html" target="_blank" rel="external">  退出 SSO + MY </a></li>
+<li>sso会获取到token,然后对token进行解密操作，删除cacheKey为的ssoTokenKey_xinghuosso_yongjieshi1@creditease.cn缓存</li>
+<li>删除成功后重定向到logouturl页面</li>
+</ol>
+<h2 id="退出本地系统"><a href="#退出本地系统" class="headerlink" title="退出本地系统"></a>退出本地系统</h2><h1 id="url-logmy"><a href="#url-logmy" class="headerlink" title="url://logmy"></a>url://logmy</h1><p>删除名称为uid的cookie<br><a name="jump3">sso.properties</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">################ SSOConfig file #################</div><div class="line">sso.role=sso_yangkai</div><div class="line">sso.secretkey=h2wmABdfM7i3K801sso_yangkai</div><div class="line">sso.cookie.domain=10.10.145.65</div><div class="line">#\u670d\u52a1\u7aef\u5730\u5740\u524d\u7f00</div><div class="line">sso.server.prefix=http://10.100.138.183:6060/</div><div class="line">#\u670d\u52a1\u7aef\u767b\u5f55\u5730\u5740</div><div class="line">sso.login.url=sso/login.html</div><div class="line"># userConfig defined</div><div class="line">sso.defined.askurl=sso/replylogin.html</div><div class="line"></div><div class="line">#\u5ba2\u6237\u7aef\u5730\u5740\u524d\u7f00</div><div class="line">sso.client.prefix=http://10.10.145.65:8090/</div><div class="line">#\u767b\u5f55\u540e\u56de\u8c03\u5730\u5740</div><div class="line">sso.callback.ReturnURL=proxylogin.html</div><div class="line">#\u8d85\u65f6\u5730\u5740</div><div class="line">sso.timeout.url=timeout.html</div><div class="line">#\u9996\u9875</div><div class="line">sso.logout.url=sso/logout.html</div><div class="line">sso.logmy.url=/logmy.html</div><div class="line">sso.client.index=index.html</div><div class="line">sso.defined.oklogin=oklogin.html</div><div class="line"># crossdomain secretkey</div><div class="line">sso.authcookie.secretkey=Lg8V51188n0709i5l81</div><div class="line">sso.defined.private_key=MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAMp4ORF5r+mBfYrpX944JDyQiaKof5CQ43H65tWS8wT2avQjiUSU2vweXVDbMRD7PPjOAPI5aiIIHFLBqAE9Nq17Xloyz66mUkvvhJxbmB24FhyhB8dREL85EIUahrljrTj2nWWGjDfXIqQoY1NhBi6l2VHgcVuoRI48UzAWcbSBAgMBAAECgYAtLeaOH7lBQcPh23GpBJ4RZa9QvIi6mZonNPWNct0HnnT/RW67/vtehugLwt2QDH/uhQlxA57LOUQYs13p6N7qMZ+4YY592hw4hrJUEAuuORU+wKWnr+wVQNm6Qc9Qf7axM6B5NgtLPbf0R7M53vgHHMyJh2tJKrY3RUdBbsUugQJBAObj3+B7v2QVKKPZlYvICwbKZAUcb1qZtPjtw7+aDah0EEqkaYD0ytmjl2esoknPySN2gbouc+nDvYZopFLgiDMCQQDgfRqCYfMHhjHPHoOwco3ZAevDDe22QksBIkfgFB9srEJCWauFyvB5PTG6+wFv94zqy3R92C6AVaWn8Ae8uqx7AkBkroWXfB7PY7KfEGh31bmJMoQ+/lFIbrJNwlCTonfGNyZLhjpDc3tpQD7rhIoYKbWJ80lKiKsfCq4AiGzvft2lAkEAqcBQDGmu0XC7N2hWolVtR7x5H8znhNuKRfg7K4lr3cxAalXOKuSzhKoucbqecqFZsK5aj1Kqjya0llIeN6tdAwJAImLxsxLxhk6dc8slEo8ObLAWWWkRZNiXCpr+2aWspVx1cK3GRtAa+0Q7X0TiA62/CrlWR/xJHvDI/+I9mcxJKg==</div><div class="line">sso.defined.public_key=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDKeDkRea/pgX2K6V/eOCQ8kImiqH+QkONx+ubVkvME9mr0I4lElNr8Hl1Q2zEQ+zz4zgDyOWoiCBxSwagBPTate15aMs+uplJL74ScW5gduBYcoQfHURC/ORCFGoa5Y6049p1lhow31yKkKGNTYQYupdlR4HFbqESOPFMwFnG0gQIDAQAB</div><div class="line">sso.defined.sso_public_key=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCDZmAZgJcQV0XjBOk/CB2nR+AXXyVMdcErLgz5LYb/g/Ar7tiHhYlGk69/mlItDnvHxeV/t7ibEqwvQnlDiM6BsYW/9HBzYWiF54D7hxd2MUWqNit232pS5XlmzurrFmqhSomrR0KKJHoA3HIsIGJ/AT9xzDb93GqPtDm6Yt24fwIDAQAB</div></pre></td></tr></table></figure></p>
+<p><a name="jump2">sso通过jsonp跨域传递cookie</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">//去askurl获取token</div><div class="line">function proxyLogin(askurl, askData, okurl) &#123;</div><div class="line">    var killAjax = true;</div><div class="line">    setTimeout(function() &#123;</div><div class="line">        checkajaxkill();</div><div class="line">    &#125;, 30000);</div><div class="line">    //</div><div class="line">    var ajaxCall = jQuery.getJSON(askurl + &quot;?callback=?&quot;, &#123;askData:askData&#125;, function(d)&#123;</div><div class="line">    	killAjax = false;</div><div class="line">    	if(d.success)&#123;</div><div class="line">    		$.post(okurl, &#123;replyTxt:d.data&#125; , function(e) &#123;</div><div class="line">	    		window.location.href = e.returl;</div><div class="line">		    &#125;, &quot;json&quot;);</div><div class="line">    	&#125;else&#123;</div><div class="line">	    	window.location.href = &quot;$&#123;nologinUrl&#125;&quot;;</div><div class="line">    	&#125;</div><div class="line">    &#125;);</div><div class="line">    function checkajaxkill()&#123;</div><div class="line">        if(killAjax)&#123;</div><div class="line">        	ajaxCall.abort();</div><div class="line">        	window.location.href = &quot;$&#123;timeouturl&#125;&quot;;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">proxyLogin(&quot;$&#123;askurl&#125;&quot;, &quot;$&#123;askData&#125;&quot;, &quot;$&#123;okurl&#125;&quot;);</div></pre></td></tr></table></figure></p>
+<p><a name="jump0">sso重定向地址事例</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">http://10.100.138.183:6060/sso/login.html?ReturnURL=http%3A%2F%2F10.10.145.65%3A8090%2Fproxylogin.html&amp;systemCode=sso_yangkai</div><div class="line">ReturnURL:sso服务器回调地址，第二步会用到</div><div class="line">systemCode:系统名称</div></pre></td></tr></table></figure></p>
+<p><a name="jump1">解密数据参考</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">public String decryptAES(String str) &#123;</div><div class="line">		String decryptStr = null;</div><div class="line">		byte[] decryptBytes1;</div><div class="line">		try &#123;</div><div class="line">			//此类为加密和解密提供密码功能</div><div class="line">			Cipher e = Cipher.getInstance(AESkey);</div><div class="line">			//用密钥和随机源初始化此 Cipher ,2 DECRYPT_MODE</div><div class="line">			e.init(2, generateKey(securitykey));</div><div class="line">			//将数据进行md6编码</div><div class="line">			byte[] scrBytes = UrlBase64.decode(str.getBytes(encoding));</div><div class="line">			//按单部分操作加密或解密数据，或者结束一个多部分操作。</div><div class="line">			decryptBytes1 = e.doFinal(scrBytes);</div><div class="line">		&#125; catch (Exception var6) &#123;</div><div class="line">			throw new KissoException(var6);</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		if(decryptBytes1 != null) &#123;</div><div class="line">			decryptStr = new String(decryptBytes1);</div><div class="line">		&#125;</div><div class="line">.</div><div class="line">		return decryptStr;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	/**</div><div class="line">	 *根据给定的字符构造一个密钥</div><div class="line">	 * @param key</div><div class="line">	 * 			密钥内容</div><div class="line">	 * @return</div><div class="line">	 * @throws UnsupportedEncodingException</div><div class="line">     */</div><div class="line">	SecretKeySpec generateKey(String key) throws UnsupportedEncodingException &#123;</div><div class="line">		//获取securitykey的md5摘要</div><div class="line">		byte[] e = md5Raw(securitykey.getBytes(encoding));</div><div class="line">		return new SecretKeySpec(e, AESkey);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	/**</div><div class="line">	 * 获取数据的md5摘要</div><div class="line">	 * @param data</div><div class="line">	 * @return</div><div class="line">     */</div><div class="line">	public static byte[] md5Raw(byte[] data) &#123;</div><div class="line">		byte[] md5buf1;</div><div class="line">		try &#123;</div><div class="line">			MessageDigest e = MessageDigest.getInstance(MD5key);</div><div class="line">			md5buf1 = e.digest(data);</div><div class="line">		&#125; catch (Exception var3) &#123;</div><div class="line">			md5buf1 = null;</div><div class="line">			var3.printStackTrace();</div><div class="line">		&#125;</div><div class="line">		return md5buf1;</div><div class="line">	&#125;</div></pre></td></tr></table></figure></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;登入认证&quot;&gt;&lt;a href=&quot;#登入认证&quot; class=&quot;headerlink&quot; title=&quot;登入认证&quot;&gt;&lt;/a&gt;登入认证&lt;/h1&gt;&lt;h2 id=&quot;step1-用户登入主页面&quot;&gt;&lt;a href=&quot;#step1-用户登入主页面&quot; class=&quot;headerlink
+    
+    </summary>
+    
+    
+      <category term="sso" scheme="http://yoursite.com/tags/sso/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>java多线程-线程池</title>
+    <link href="http://yoursite.com/2016/09/14/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A0-%E7%BA%BF%E7%A8%8B%E6%B1%A0/"/>
+    <id>http://yoursite.com/2016/09/14/java多线程学习-线程池/</id>
+    <published>2016-09-14T02:49:39.000Z</published>
+    <updated>2016-09-21T01:43:59.559Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="任务与执行策略之间的隐形耦合"><a href="#任务与执行策略之间的隐形耦合" class="headerlink" title="任务与执行策略之间的隐形耦合"></a>任务与执行策略之间的隐形耦合</h1><p>Executor框架为置顶和修改执行策略听歌了很大的灵活性，但并非所有的任务都能适合所有的执行策略</p>
+<ul>
+<li>依赖性任务<br>如果提交给线程池的任务需要以来其他的任务，那么就隐含地给执行策略带来了约束，此时需要维持执行策略以免产生跳跃性的问题</li>
+<li>使用线程封闭机制的任务<br>任务要求其执行所在的Exeutor是单线程的。</li>
+<li>对响应时间敏感的任务</li>
+<li>使用ThreadLocal任务<br>只有当线程本地值的生命受限于任务色声明周期时，在线程池中使用ThreadLocal才有意义，而在线程池的线程中不应该使用ThradLocal在任务之间传递值。</li>
+</ul>
+<h2 id="线程饥饿死锁"><a href="#线程饥饿死锁" class="headerlink" title="线程饥饿死锁"></a>线程饥饿死锁</h2><p>在线程池中，如果任务依赖于其他任务，则可能产生死锁</p>
+<h2 id="执行时间较长的任务"><a href="#执行时间较长的任务" class="headerlink" title="执行时间较长的任务"></a>执行时间较长的任务</h2><h2 id="设置线程池的大小"><a href="#设置线程池的大小" class="headerlink" title="设置线程池的大小"></a>设置线程池的大小</h2><p>计算密集型线程 = cpu数量+1<br>I/O 密集型线程数更大些</p>
+<h1 id="配置ThreadPoolExecutor"><a href="#配置ThreadPoolExecutor" class="headerlink" title="配置ThreadPoolExecutor"></a>配置ThreadPoolExecutor</h1><p>一个 ExecutorService，它使用可能的几个池线程之一执行每个提交的任务，通常使用 Executors 工厂方法配置。 </p>
+<p>线程池可以解决两个不同问题：由于减少了每个任务调用的开销，它们通常可以在执行大量异步任务时提供增强的性能，并且还可以提供绑定和管理资源（包括执行任务集时使用的线程）的方法。每个 ThreadPoolExecutor 还维护着一些基本的统计数据，如完成的任务数。 </p>
+<p>为了便于跨大量上下文使用，此类提供了很多可调整的参数和扩展钩子 (hook)。但是，强烈建议程序员使用较为方便的 Executors 工厂方法 Executors.newCachedThreadPool()（无界线程池，可以进行自动线程回收）、Executors.newFixedThreadPool(int)（固定大小线程池）和 Executors.newSingleThreadExecutor()（单个后台线程），它们均为大多数使用场景预定义了设置。否则，在手动配置和调整此类时，使用以下指导： </p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;任务与执行策略之间的隐形耦合&quot;&gt;&lt;a href=&quot;#任务与执行策略之间的隐形耦合&quot; class=&quot;headerlink&quot; title=&quot;任务与执行策略之间的隐形耦合&quot;&gt;&lt;/a&gt;任务与执行策略之间的隐形耦合&lt;/h1&gt;&lt;p&gt;Executor框架为置顶和修改执行策略听歌
+    
+    </summary>
+    
+    
+      <category term="java多线程" scheme="http://yoursite.com/tags/java%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>java多线程-对象的共享</title>
+    <link href="http://yoursite.com/2016/09/06/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%85%B1%E4%BA%AB/"/>
+    <id>http://yoursite.com/2016/09/06/java多线程学习-对象的共享/</id>
+    <published>2016-09-06T02:49:39.000Z</published>
+    <updated>2016-09-08T04:58:37.602Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="对象的共享"><a href="#对象的共享" class="headerlink" title="对象的共享"></a>对象的共享</h1><ul>
+<li>我们不仅希望方式摸个线程正在使用对象状态而亮一个线程在同时修改该状态，而且希望确保当一个线程修改了对象状态后，其他线程能够看到发生的状态变化。<br>可以通过显示的同步或者类库中内置的同步来保证对象被安全的发布。</li>
+</ul>
+<h2 id="可见性"><a href="#可见性" class="headerlink" title="可见性"></a>可见性</h2><p>执行读取操作的线程能够适时的看到其他线程写入的值。</p>
+<h2 id="加锁与可见性"><a href="#加锁与可见性" class="headerlink" title="加锁与可见性"></a>加锁与可见性</h2><p>加锁的含义不仅仅局限与互斥行为，还包括内存的可见性，为了确保所有的线程都能看到共享内存的变量，所有执行读取操作或者写操作的线程都必须在同一个锁上同步<br>volitile 变量</p>
+<h1 id="缓存一致性解决方案"><a href="#缓存一致性解决方案" class="headerlink" title="缓存一致性解决方案"></a><a href="http://www.cnblogs.com/dolphin0520/p/3920373.html" target="_blank" rel="external">缓存一致性解决方案</a></h1><p>1）通过在总线加LOCK#锁的方式</p>
+<p>2）通过缓存一致性协议</p>
+<p>这2种方式都是硬件层面上提供的方式。</p>
+<p>在早期的CPU当中，是通过在总线上加LOCK#锁的形式来解决缓存不一致的问题。因为CPU和其他部件进行通信都是通过总线来进行的，如果对总线加LOCK#锁的话，也就是说阻塞了其他CPU对其他部件访问（如内存），从而使得只能有一个CPU能使用这个变量的内存。比如上面例子中 如果一个线程在执行 i = i +1，如果在执行这段代码的过程中，在总线上发出了LCOK#锁的信号，那么只有等待这段代码完全执行完毕之后，其他CPU才能从变量i所在的内存读取变量，然后进行相应的操作。这样就解决了缓存不一致的问题。</p>
+<p>但是上面的方式会有一个问题，由于在锁住总线期间，其他CPU无法访问内存，导致效率低下。</p>
+<p>所以就出现了缓存一致性协议。最出名的就是Intel 的MESI协议，MESI协议保证了每个缓存中使用的共享变量的副本是一致的。它核心的思想是：当CPU写数据时，如果发现操作的变量是共享变量，即在其他CPU中也存在该变量的副本，会发出信号通知其他CPU将该变量的缓存行置为无效状态，因此当其他CPU需要读取这个变量时，发现自己缓存中缓存该变量的缓存行是无效的，那么它就会从内存重新读取。</p>
+<h2 id="线程封闭"><a href="#线程封闭" class="headerlink" title="线程封闭"></a>线程封闭</h2><p>当访问共享的可变数据时，同城需要使用同步，一种笔满使用同步的方式就是不共享数据。</p>
+<h3 id="栈封闭"><a href="#栈封闭" class="headerlink" title="栈封闭"></a>栈封闭</h3><p>在栈封闭中，只能通过局部变量才能访问对象。</p>
+<h2 id="ThreadLocal"><a href="#ThreadLocal" class="headerlink" title="ThreadLocal"></a><a href="http://baitian.iteye.com/blog/1007515" target="_blank" rel="external">ThreadLocal</a></h2><p>原理分析<br>每个thread都有一个threalLocalMap由于存放threadLocal对象<br>将需要共享的变量T 声明为threadLocal<t><br>一个threadLocal对象建立时需要将threalLocal<t> T的值存放当当前thread的threadLocalMap对象中，key为当前threadLocal对象<br>当需要取值是，把当前threadLocal对象传入，则能够获取变量值<br>因为threalLocalMap实在每个thread中，也就实现每个线程中T的独立</t></t></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;对象的共享&quot;&gt;&lt;a href=&quot;#对象的共享&quot; class=&quot;headerlink&quot; title=&quot;对象的共享&quot;&gt;&lt;/a&gt;对象的共享&lt;/h1&gt;&lt;ul&gt;
+&lt;li&gt;我们不仅希望方式摸个线程正在使用对象状态而亮一个线程在同时修改该状态，而且希望确保当一个线程修改了对象状
+    
+    </summary>
+    
+    
+      <category term="java多线程" scheme="http://yoursite.com/tags/java%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>java多线程-线程安全性</title>
+    <link href="http://yoursite.com/2016/09/06/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A0/"/>
+    <id>http://yoursite.com/2016/09/06/java多线程学习/</id>
+    <published>2016-09-06T02:49:39.000Z</published>
+    <updated>2016-09-07T08:10:59.314Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="线程安全性"><a href="#线程安全性" class="headerlink" title="线程安全性"></a>线程安全性</h1><h2 id="线程安全定义"><a href="#线程安全定义" class="headerlink" title="线程安全定义"></a>线程安全定义</h2><ul>
+<li>当多个线程访问某个类时，不管运行时环境采用何种调度方式或者这些线程将如何交替执行，并且在主调代码中不需要任何额外的同步或者协同，这个类都能表现出正确的行为，那么就称这个类是线程安全的<h2 id="原子性"><a href="#原子性" class="headerlink" title="原子性"></a>原子性</h2></li>
+<li>程序作为不可分割的一部分，也就是说在执行该程序的过程中其他线程要处于等待状态<h2 id="竟态条件"><a href="#竟态条件" class="headerlink" title="竟态条件"></a>竟态条件</h2></li>
+<li>当某个计算的正确性取决于多个线程的交替执行时序时，那么就会发生静态条件。<br><em>列子：一段程序有两个步骤A,B A中的值对B产生影响，如果两个线程U该执行完A，在要去执行B过程中，线程W修改了A中结果的数值，此时U中B执行的结果是错误的</em><h2 id="复合操作"><a href="#复合操作" class="headerlink" title="复合操作"></a>复合操作</h2></li>
+<li>为了避免竟态条件的问题，就必须在某个线程修改该变量值时，需要通过某种方式防止其他线程使用这个变量。<br><em>要解决上边例子的问题，必须保证U在执行的过程中不该程序不能被其他线程多影响</em><h2 id="加锁机制"><a href="#加锁机制" class="headerlink" title="加锁机制"></a>加锁机制</h2></li>
+<li>目的为了实现程序的原子性<h3 id="内置锁"><a href="#内置锁" class="headerlink" title="内置锁"></a>内置锁</h3></li>
+<li><p>同步代码块</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">synchronized(lock)&#123;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>重入<br>机制：每个锁都关联一个请求计数器和一个占有他的线程，当请求计数器为0时，这个锁可以被认为是unhled的，当一个线程请求一个unheld的锁时，JVM记录锁的拥有者，并把锁的请求计数加1，如果同一个线程再次请求这个锁时，请求计数器就会增加，当该线程退出syncronized块时，计数器减1，当计数器为0时，锁被释放。<br>java锁的可重入性机制可以解决下面这个问题</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">public class Widget &#123;  </div><div class="line">    public synchronized void doSomething() &#123;  </div><div class="line">        ...  </div><div class="line">    &#125;  </div><div class="line">&#125;  </div><div class="line">  </div><div class="line">public class LoggingWidget extends Widget &#123;  </div><div class="line">    public synchronized void doSomething() &#123;  </div><div class="line">        System.out.println(toString() + &quot;: calling doSomething&quot;);  </div><div class="line">        super.doSomething();  </div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>如果没有Java锁的可重入性，当一个线程获取LoggingWidget的doSomething()代码块的锁后，这个线程已经拿到了LoggingWidget的锁，当调用父类中的doSomething()方法的时，JVM会认为这个线程已经获取了LoggingWidget的锁，而不能再次获取，从而无法调用Widget的doSomething()方法，从而造成死锁。从中我们也能看出，java线程是基于“每线程（per-thread）”，而不是基于“每调用的（per-invocation）”的，也就是说java为每个线程分配一个锁，而不是为每次调用分配一个锁。<br><a href="http://blog.csdn.net/dayuguohou2008/article/details/6660179" target="_blank" rel="external">http://blog.csdn.net/dayuguohou2008/article/details/6660179</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;线程安全性&quot;&gt;&lt;a href=&quot;#线程安全性&quot; class=&quot;headerlink&quot; title=&quot;线程安全性&quot;&gt;&lt;/a&gt;线程安全性&lt;/h1&gt;&lt;h2 id=&quot;线程安全定义&quot;&gt;&lt;a href=&quot;#线程安全定义&quot; class=&quot;headerlink&quot; title=&quot;线
+    
+    </summary>
+    
+    
+      <category term="java多线程" scheme="http://yoursite.com/tags/java%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>idea 快捷键</title>
+    <link href="http://yoursite.com/2016/08/31/idea%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE/"/>
+    <id>http://yoursite.com/2016/08/31/idea常用快捷键/</id>
+    <published>2016-08-31T05:55:39.000Z</published>
+    <updated>2016-09-02T08:20:02.576Z</updated>
+    
+    <content type="html"><![CDATA[<p>idea 快捷键</p>
+ <table> <tbody><br> <tr> <th> 快捷键名称 </th> <th> 快捷键方式 </th> </tr><br> <tr> <td>全局查询</td><td>ctrl+shift+F</td></tr><br> <tr><td>查看接口实现类</td><td>ctrl+alt+b</td>    </tr><br> <tr><td>导入包</td><td>alt+enter</td></tr><br> <tr><td>大小写轮流转换</td><td>ctrl+shift+u</td></tr><br> <tr><td>代码自动生成，如生成对象的 set / get 方法，构造函数，toString() 等</td><td>Alt + Insert</td></tr><br> <tr><td>重构-重命名</td><td shift+f6="" <="" td=""></td></tr><br> </tbody> </table>
+
+
+
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;idea 快捷键&lt;/p&gt;
+ &lt;table&gt; &lt;tbody&gt;&lt;br&gt; &lt;tr&gt; &lt;th&gt; 快捷键名称 &lt;/th&gt; &lt;th&gt; 快捷键方式 &lt;/th&gt; &lt;/tr&gt;&lt;br&gt; &lt;tr&gt; &lt;td&gt;全局查询&lt;/td&gt;&lt;td&gt;ctrl+shift+F&lt;/td&gt;&lt;/tr&gt;&lt;br&gt; &lt;tr&gt;&lt;
+    
+    </summary>
+    
+    
+      <category term="idea" scheme="http://yoursite.com/tags/idea/"/>
+    
+  </entry>
+  
+  <entry>
     <title>git使用教程</title>
     <link href="http://yoursite.com/2016/08/23/git%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/"/>
     <id>http://yoursite.com/2016/08/23/git使用教程/</id>
     <published>2016-08-23T09:55:39.000Z</published>
-    <updated>2016-08-23T10:28:09.319Z</updated>
+    <updated>2016-08-23T10:41:54.792Z</updated>
     
     <content type="html"><![CDATA[<h1 id="git-安装"><a href="#git-安装" class="headerlink" title="git 安装"></a>git 安装</h1><h1 id="git-push代码到github"><a href="#git-push代码到github" class="headerlink" title="git push代码到github"></a>git push代码到github</h1><h2 id="进入到等下要push的代码的目录文件夹，打开bash"><a href="#进入到等下要push的代码的目录文件夹，打开bash" class="headerlink" title="进入到等下要push的代码的目录文件夹，打开bash"></a>进入到等下要push的代码的目录文件夹，打开bash</h2><ul>
 <li>初始化<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git init</div></pre></td></tr></table></figure>

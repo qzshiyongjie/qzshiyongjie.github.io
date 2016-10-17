@@ -7,13 +7,18 @@
 
     
 
-    <title>归档 | </title>
+    <title>java多线程-线程安全性 | </title>
     <meta name="author" content="John Doe">
+    
+    <meta name="description" content="线程安全性线程安全定义
+当多个线程访问某个类时，不管运行时环境采用何种调度方式或者这些线程将如何交替执行，并且在主调代码中不需要任何额外的同步或者协同，这个类都能表现出正确的行为，那么就称这个类是线程安全的原子性
+程序作为不可分割的一部分，也就是说在执行该程序的过程中其他线程要处于等待状态竟态条件
+">
     
     
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-    
+    <meta property="og:title" content="java多线程-线程安全性"/>
     <meta property="og:site_name" content="Hexo"/>
 
     
@@ -191,82 +196,70 @@
 
     <main>
         <div class="container main-container">
-    
-
-<nav class="page-nav hide-on-small-only">
+    <nav class="page-nav hide-on-small-only">
     <div class="nav-wrapper indigo">
-        <span class="breadcrumb">当前位置（归档）</span>
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+
         
 
         
     </div>
 </nav>
 
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>java多线程-线程安全性</h1>
+    
 
 
-    <ul class="collapsible mt-0" data-collapsible="accordion">
+            </div>
+            <time class="pink-link-context" datetime="2016-09-06T02:49:39.000Z"><a href="/2016/09/06/java多线程学习/">2016-09-06</a></time>
+
+            
+    <div class="tags-row">
         
+            <a href="/tags/java多线程/" class="chip pink lighten-1">java多线程</a>
         
-            <li>
-                <div class="collapsible-header active">
-                    <i class="fa fa-archive"></i>2016
-                </div>
-                <div class="collapsible-body">
-                    <div class="collection">
-                        
-                            <a href="/2016/10/14/单点登入认证客户端详解/" class="collection-item grey-text text-darken-1">
-                                <time datetime="2016-10-14T02:40:39.000Z">2016-10-14</time>
-                                <span>&nbsp;&nbsp;&nbsp;</span>
-                                sso单点登入认证
-                            </a>
-                        
-                            <a href="/2016/09/14/java多线程学习-线程池/" class="collection-item grey-text text-darken-1">
-                                <time datetime="2016-09-14T02:49:39.000Z">2016-09-14</time>
-                                <span>&nbsp;&nbsp;&nbsp;</span>
-                                java多线程-线程池
-                            </a>
-                        
-                            <a href="/2016/09/06/java多线程学习-对象的共享/" class="collection-item grey-text text-darken-1">
-                                <time datetime="2016-09-06T02:49:39.000Z">2016-09-06</time>
-                                <span>&nbsp;&nbsp;&nbsp;</span>
-                                java多线程-对象的共享
-                            </a>
-                        
-                            <a href="/2016/09/06/java多线程学习/" class="collection-item grey-text text-darken-1">
-                                <time datetime="2016-09-06T02:49:39.000Z">2016-09-06</time>
-                                <span>&nbsp;&nbsp;&nbsp;</span>
-                                java多线程-线程安全性
-                            </a>
-                        
-                            <a href="/2016/08/31/idea常用快捷键/" class="collection-item grey-text text-darken-1">
-                                <time datetime="2016-08-31T05:55:39.000Z">2016-08-31</time>
-                                <span>&nbsp;&nbsp;&nbsp;</span>
-                                idea 快捷键
-                            </a>
-                        
-                            <a href="/2016/08/23/git使用教程/" class="collection-item grey-text text-darken-1">
-                                <time datetime="2016-08-23T09:55:39.000Z">2016-08-23</time>
-                                <span>&nbsp;&nbsp;&nbsp;</span>
-                                git使用教程
-                            </a>
-                        
-                            <a href="/2016/08/11/hello-world/" class="collection-item grey-text text-darken-1">
-                                <time datetime="2016-08-11T02:33:54.540Z">2016-08-11</time>
-                                <span>&nbsp;&nbsp;&nbsp;</span>
-                                Hello World
-                            </a>
-                        
-                            <a href="/2016/08/10/angularjs-自定义搜索选择框/" class="collection-item grey-text text-darken-1">
-                                <time datetime="2016-08-10T09:55:39.000Z">2016-08-10</time>
-                                <span>&nbsp;&nbsp;&nbsp;</span>
-                                angularjs-自定义搜索选择框
-                            </a>
-                        
-                    </div>
-                </div>
-            </li>
-        
-    </ul>
+    </div>
+
+
+            <div class="toc pink-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-1"><a class="section table-of-contents-link" href="#线程安全性"><span class="section table-of-contents-text">线程安全性</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#线程安全定义"><span class="section table-of-contents-text">线程安全定义</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#原子性"><span class="section table-of-contents-text">原子性</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#竟态条件"><span class="section table-of-contents-text">竟态条件</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#复合操作"><span class="section table-of-contents-text">复合操作</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#加锁机制"><span class="section table-of-contents-text">加锁机制</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#内置锁"><span class="section table-of-contents-text">内置锁</span></a></li></ol></li></ol></li></ol>
+</div>
+
+
+            <div class="entry pink-link-context">
+                <h1 id="线程安全性"><a href="#线程安全性" class="headerlink" title="线程安全性"></a>线程安全性</h1><h2 id="线程安全定义"><a href="#线程安全定义" class="headerlink" title="线程安全定义"></a>线程安全定义</h2><ul>
+<li>当多个线程访问某个类时，不管运行时环境采用何种调度方式或者这些线程将如何交替执行，并且在主调代码中不需要任何额外的同步或者协同，这个类都能表现出正确的行为，那么就称这个类是线程安全的<h2 id="原子性"><a href="#原子性" class="headerlink" title="原子性"></a>原子性</h2></li>
+<li>程序作为不可分割的一部分，也就是说在执行该程序的过程中其他线程要处于等待状态<h2 id="竟态条件"><a href="#竟态条件" class="headerlink" title="竟态条件"></a>竟态条件</h2></li>
+<li>当某个计算的正确性取决于多个线程的交替执行时序时，那么就会发生静态条件。<br><em>列子：一段程序有两个步骤A,B A中的值对B产生影响，如果两个线程U该执行完A，在要去执行B过程中，线程W修改了A中结果的数值，此时U中B执行的结果是错误的</em><h2 id="复合操作"><a href="#复合操作" class="headerlink" title="复合操作"></a>复合操作</h2></li>
+<li>为了避免竟态条件的问题，就必须在某个线程修改该变量值时，需要通过某种方式防止其他线程使用这个变量。<br><em>要解决上边例子的问题，必须保证U在执行的过程中不该程序不能被其他线程多影响</em><h2 id="加锁机制"><a href="#加锁机制" class="headerlink" title="加锁机制"></a>加锁机制</h2></li>
+<li>目的为了实现程序的原子性<h3 id="内置锁"><a href="#内置锁" class="headerlink" title="内置锁"></a>内置锁</h3></li>
+<li><p>同步代码块</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">synchronized(lock)&#123;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>重入<br>机制：每个锁都关联一个请求计数器和一个占有他的线程，当请求计数器为0时，这个锁可以被认为是unhled的，当一个线程请求一个unheld的锁时，JVM记录锁的拥有者，并把锁的请求计数加1，如果同一个线程再次请求这个锁时，请求计数器就会增加，当该线程退出syncronized块时，计数器减1，当计数器为0时，锁被释放。<br>java锁的可重入性机制可以解决下面这个问题</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">public class Widget &#123;  </div><div class="line">    public synchronized void doSomething() &#123;  </div><div class="line">        ...  </div><div class="line">    &#125;  </div><div class="line">&#125;  </div><div class="line">  </div><div class="line">public class LoggingWidget extends Widget &#123;  </div><div class="line">    public synchronized void doSomething() &#123;  </div><div class="line">        System.out.println(toString() + &quot;: calling doSomething&quot;);  </div><div class="line">        super.doSomething();  </div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>如果没有Java锁的可重入性，当一个线程获取LoggingWidget的doSomething()代码块的锁后，这个线程已经拿到了LoggingWidget的锁，当调用父类中的doSomething()方法的时，JVM会认为这个线程已经获取了LoggingWidget的锁，而不能再次获取，从而无法调用Widget的doSomething()方法，从而造成死锁。从中我们也能看出，java线程是基于“每线程（per-thread）”，而不是基于“每调用的（per-invocation）”的，也就是说java为每个线程分配一个锁，而不是为每次调用分配一个锁。<br><a href="http://blog.csdn.net/dayuguohou2008/article/details/6660179" target="_blank" rel="external">http://blog.csdn.net/dayuguohou2008/article/details/6660179</a></p>
+
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
 
 
 </div>

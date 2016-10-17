@@ -7,13 +7,19 @@
 
     
 
-    <title>归档 | </title>
+    <title>java多线程-对象的共享 | </title>
     <meta name="author" content="John Doe">
+    
+    <meta name="description" content="对象的共享
+我们不仅希望方式摸个线程正在使用对象状态而亮一个线程在同时修改该状态，而且希望确保当一个线程修改了对象状态后，其他线程能够看到发生的状态变化。可以通过显示的同步或者类库中内置的同步来保证对象被安全的发布。
+
+可见性执行读取操作的线程能够适时的看到其他线程写入的值。
+加锁与可见性加锁的含义">
     
     
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-    
+    <meta property="og:title" content="java多线程-对象的共享"/>
     <meta property="og:site_name" content="Hexo"/>
 
     
@@ -191,82 +197,70 @@
 
     <main>
         <div class="container main-container">
-    
-
-<nav class="page-nav hide-on-small-only">
+    <nav class="page-nav hide-on-small-only">
     <div class="nav-wrapper indigo">
-        <span class="breadcrumb">当前位置（归档）</span>
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+
         
 
         
     </div>
 </nav>
 
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>java多线程-对象的共享</h1>
+    
 
 
-    <ul class="collapsible mt-0" data-collapsible="accordion">
+            </div>
+            <time class="pink-link-context" datetime="2016-09-06T02:49:39.000Z"><a href="/2016/09/06/java多线程学习-对象的共享/">2016-09-06</a></time>
+
+            
+    <div class="tags-row">
         
+            <a href="/tags/java多线程/" class="chip pink lighten-1">java多线程</a>
         
-            <li>
-                <div class="collapsible-header active">
-                    <i class="fa fa-archive"></i>2016
-                </div>
-                <div class="collapsible-body">
-                    <div class="collection">
-                        
-                            <a href="/2016/10/14/单点登入认证客户端详解/" class="collection-item grey-text text-darken-1">
-                                <time datetime="2016-10-14T02:40:39.000Z">2016-10-14</time>
-                                <span>&nbsp;&nbsp;&nbsp;</span>
-                                sso单点登入认证
-                            </a>
-                        
-                            <a href="/2016/09/14/java多线程学习-线程池/" class="collection-item grey-text text-darken-1">
-                                <time datetime="2016-09-14T02:49:39.000Z">2016-09-14</time>
-                                <span>&nbsp;&nbsp;&nbsp;</span>
-                                java多线程-线程池
-                            </a>
-                        
-                            <a href="/2016/09/06/java多线程学习-对象的共享/" class="collection-item grey-text text-darken-1">
-                                <time datetime="2016-09-06T02:49:39.000Z">2016-09-06</time>
-                                <span>&nbsp;&nbsp;&nbsp;</span>
-                                java多线程-对象的共享
-                            </a>
-                        
-                            <a href="/2016/09/06/java多线程学习/" class="collection-item grey-text text-darken-1">
-                                <time datetime="2016-09-06T02:49:39.000Z">2016-09-06</time>
-                                <span>&nbsp;&nbsp;&nbsp;</span>
-                                java多线程-线程安全性
-                            </a>
-                        
-                            <a href="/2016/08/31/idea常用快捷键/" class="collection-item grey-text text-darken-1">
-                                <time datetime="2016-08-31T05:55:39.000Z">2016-08-31</time>
-                                <span>&nbsp;&nbsp;&nbsp;</span>
-                                idea 快捷键
-                            </a>
-                        
-                            <a href="/2016/08/23/git使用教程/" class="collection-item grey-text text-darken-1">
-                                <time datetime="2016-08-23T09:55:39.000Z">2016-08-23</time>
-                                <span>&nbsp;&nbsp;&nbsp;</span>
-                                git使用教程
-                            </a>
-                        
-                            <a href="/2016/08/11/hello-world/" class="collection-item grey-text text-darken-1">
-                                <time datetime="2016-08-11T02:33:54.540Z">2016-08-11</time>
-                                <span>&nbsp;&nbsp;&nbsp;</span>
-                                Hello World
-                            </a>
-                        
-                            <a href="/2016/08/10/angularjs-自定义搜索选择框/" class="collection-item grey-text text-darken-1">
-                                <time datetime="2016-08-10T09:55:39.000Z">2016-08-10</time>
-                                <span>&nbsp;&nbsp;&nbsp;</span>
-                                angularjs-自定义搜索选择框
-                            </a>
-                        
-                    </div>
-                </div>
-            </li>
-        
-    </ul>
+    </div>
+
+
+            <div class="toc pink-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-1"><a class="section table-of-contents-link" href="#对象的共享"><span class="section table-of-contents-text">对象的共享</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#可见性"><span class="section table-of-contents-text">可见性</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#加锁与可见性"><span class="section table-of-contents-text">加锁与可见性</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-1"><a class="section table-of-contents-link" href="#缓存一致性解决方案"><span class="section table-of-contents-text">缓存一致性解决方案</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#线程封闭"><span class="section table-of-contents-text">线程封闭</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#栈封闭"><span class="section table-of-contents-text">栈封闭</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#ThreadLocal"><span class="section table-of-contents-text">ThreadLocal</span></a></li></ol></li></ol>
+</div>
+
+
+            <div class="entry pink-link-context">
+                <h1 id="对象的共享"><a href="#对象的共享" class="headerlink" title="对象的共享"></a>对象的共享</h1><ul>
+<li>我们不仅希望方式摸个线程正在使用对象状态而亮一个线程在同时修改该状态，而且希望确保当一个线程修改了对象状态后，其他线程能够看到发生的状态变化。<br>可以通过显示的同步或者类库中内置的同步来保证对象被安全的发布。</li>
+</ul>
+<h2 id="可见性"><a href="#可见性" class="headerlink" title="可见性"></a>可见性</h2><p>执行读取操作的线程能够适时的看到其他线程写入的值。</p>
+<h2 id="加锁与可见性"><a href="#加锁与可见性" class="headerlink" title="加锁与可见性"></a>加锁与可见性</h2><p>加锁的含义不仅仅局限与互斥行为，还包括内存的可见性，为了确保所有的线程都能看到共享内存的变量，所有执行读取操作或者写操作的线程都必须在同一个锁上同步<br>volitile 变量</p>
+<h1 id="缓存一致性解决方案"><a href="#缓存一致性解决方案" class="headerlink" title="缓存一致性解决方案"></a><a href="http://www.cnblogs.com/dolphin0520/p/3920373.html" target="_blank" rel="external">缓存一致性解决方案</a></h1><p>1）通过在总线加LOCK#锁的方式</p>
+<p>2）通过缓存一致性协议</p>
+<p>这2种方式都是硬件层面上提供的方式。</p>
+<p>在早期的CPU当中，是通过在总线上加LOCK#锁的形式来解决缓存不一致的问题。因为CPU和其他部件进行通信都是通过总线来进行的，如果对总线加LOCK#锁的话，也就是说阻塞了其他CPU对其他部件访问（如内存），从而使得只能有一个CPU能使用这个变量的内存。比如上面例子中 如果一个线程在执行 i = i +1，如果在执行这段代码的过程中，在总线上发出了LCOK#锁的信号，那么只有等待这段代码完全执行完毕之后，其他CPU才能从变量i所在的内存读取变量，然后进行相应的操作。这样就解决了缓存不一致的问题。</p>
+<p>但是上面的方式会有一个问题，由于在锁住总线期间，其他CPU无法访问内存，导致效率低下。</p>
+<p>所以就出现了缓存一致性协议。最出名的就是Intel 的MESI协议，MESI协议保证了每个缓存中使用的共享变量的副本是一致的。它核心的思想是：当CPU写数据时，如果发现操作的变量是共享变量，即在其他CPU中也存在该变量的副本，会发出信号通知其他CPU将该变量的缓存行置为无效状态，因此当其他CPU需要读取这个变量时，发现自己缓存中缓存该变量的缓存行是无效的，那么它就会从内存重新读取。</p>
+<h2 id="线程封闭"><a href="#线程封闭" class="headerlink" title="线程封闭"></a>线程封闭</h2><p>当访问共享的可变数据时，同城需要使用同步，一种笔满使用同步的方式就是不共享数据。</p>
+<h3 id="栈封闭"><a href="#栈封闭" class="headerlink" title="栈封闭"></a>栈封闭</h3><p>在栈封闭中，只能通过局部变量才能访问对象。</p>
+<h2 id="ThreadLocal"><a href="#ThreadLocal" class="headerlink" title="ThreadLocal"></a><a href="http://baitian.iteye.com/blog/1007515" target="_blank" rel="external">ThreadLocal</a></h2><p>原理分析<br>每个thread都有一个threalLocalMap由于存放threadLocal对象<br>将需要共享的变量T 声明为threadLocal<t><br>一个threadLocal对象建立时需要将threalLocal<t> T的值存放当当前thread的threadLocalMap对象中，key为当前threadLocal对象<br>当需要取值是，把当前threadLocal对象传入，则能够获取变量值<br>因为threalLocalMap实在每个thread中，也就实现每个线程中T的独立</t></t></p>
+
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
 
 
 </div>
